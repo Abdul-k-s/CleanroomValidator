@@ -1,13 +1,13 @@
 # CleanroomValidator — Revit 2025 Add-in
 
-Verifies cleanroom airflow compliance against GMP (EU Annex 1) and ISO 14644 standards.
+Verifies cleanroom airflow compliance with GMP (EU Annex 1) and ISO 14644 standards.
 
 ## Features
 
 - **Compliance Check**: Verifies rooms against GMP-B/C/D or ISO-6/7/8 requirements
-- **Auto-detection**: Reads room volume, supply CFM from MEP spaces, pressure
+- **Auto-detection**: Reads room volume, supply CFM from MEP spaces, and pressure
 - **Adjacency Analysis**: Detects adjacent rooms via doors for pressure cascade validation
-- **Linked Model Support**: Optional use of linked mechanical model for MEP data
+- **Linked Model Support**: Optional use of a linked mechanical model for MEP data
 - **Summary Report**: Single-table view with export to CSV
 
 ## Installation
@@ -65,6 +65,10 @@ Output: `Build\Output\CleanroomValidator-v1.0.0-Revit2025.zip`
 ## Usage
 
 ### Set Cleanliness Class
+<img width="1918" height="1015" alt="3" src="https://github.com/user-attachments/assets/5eb8621b-02ac-45bd-a61d-34cdc916a1e2" />
+<img width="1915" height="1016" alt="2" src="https://github.com/user-attachments/assets/c77db85e-2b47-4467-8afe-5c6e36b76e0d" />
+
+
 1. Click **Set Class** button
 2. Select GMP or ISO standard
 3. Assign classes to rooms
@@ -77,10 +81,23 @@ Output: `Build\Output\CleanroomValidator-v1.0.0-Revit2025.zip`
 4. Spaces are created with classifications
 
 ### Check Compliance
+
+<img width="1920" height="1017" alt="Screenshot 2026-04-14 235132" src="https://github.com/user-attachments/assets/184a4f6a-db45-4e77-9c6a-67094e889e11" />
+
+
 1. Click **Check Compliance**
 2. Review results (ACH, pressure, recovery time)
 3. Export to CSV if needed
 
+### Set Space Type
+
+<img width="1920" height="1013" alt="Screenshot 2026-04-14 234751" src="https://github.com/user-attachments/assets/09298ba0-0e87-4726-b4ee-2de5bbe1293e" />
+
+
+1. Check all spaces that need to apply cleanroom parameters 
+2. **Auto-Match All** set each space type by its name (uses 70% matches)
+3. There is a colored legend that shows the percentage of matching names to make it easier for the user to check the space type
+   
 ## Standards Reference
 
 ### GMP (EU Annex 1)
