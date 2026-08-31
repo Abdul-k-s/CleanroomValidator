@@ -10,6 +10,10 @@ Verifies cleanroom airflow compliance against GMP (EU Annex 1) and ISO 14644 sta
 - **Linked Model Support**: Optional use of linked mechanical model for MEP data
 - **Summary Report**: Single-table view with export to CSV
 
+## Recent Updates
+
+- Fixed a bug where checking "Cleanrooms only" in the compliance summary did not properly filter out unclassified rooms originating from linked models.
+
 ## Installation
 
 ### Option 1: Quick Install (Recommended)

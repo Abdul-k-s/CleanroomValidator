@@ -223,6 +223,8 @@ namespace CleanroomValidator.UI
                 var achResult = achService.CalculateAchForRoom(room);
                 var cls       = CleanlinessClass.Parse(paramService.GetCleanlinessClass(room));
                 var req       = StandardsDatabase.GetRequirements(cls);
+                bool isUnclassified = cls.Grade == CleanlinessGrade.Unclassified;
+                double achTargetOverride = isUnclassified ? paramService.GetAchTarget(room) : 0;
                 GetTerminalFlows(room.Id, out double rSupFts, out double rRetFts, out double rExhFts);
                 double supplyFts  = rSupFts > 0 ? rSupFts : achResult.SupplyAirflowCfm / 60.0;
                 double returnFts  = rRetFts;
@@ -246,18 +248,23 @@ namespace CleanroomValidator.UI
                     Level              = room.Level?.Name ?? "No Level",
                     Source             = sourceName.Length > 10 ? sourceName[..10] + "…" : sourceName,
                     CleanlinessClass   = cls.ToString(),
+                    IsUnclassified     = isUnclassified,
                     VolumeFt3          = achResult.Volume,
                     SupplyFt3s         = supplyFts,
                     ReturnFt3s         = returnFts,
                     ExhaustFt3s        = exhaustFts,
-                    MinAch             = req.MinAch,
-                    MaxAch             = req.MaxAch,
+                    MinAch             = isUnclassified ? (int)achTargetOverride : req.MinAch,
+                    MaxAch             = isUnclassified ? (int)achTargetOverride * 2 : req.MaxAch,
                     RecoveryTimeMinutes= achResult.RecoveryTimeMinutes,
                     PressurePa         = pressureR,
                     LeakageArea_m2     = leakAreaR,
                     HasVolumeWarning   = achResult.HasVolumeWarning,
                     Notes              = achResult.Notes,
                 };
+
+                if (isUnclassified && achTargetOverride > 0)
+                    row.AchTargetEdit = achTargetOverride.ToString("F1");
+
                 row.RefreshStatus();
                 row.RefreshCheckResults(_useSI);
                 _results.Add(row);
