@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Cleanroom Validator</Name>
+    <Assembly>CleanroomValidator\CleanroomValidator.dll</Assembly>
+    <FullClassName>CleanroomValidator.App</FullClassName>
+    <AddInId>8D4E2F1A-3B5C-4D6E-9F8A-1B2C3D4E5F6A</AddInId>
+    <VendorId>CleanroomValidator</VendorId>
+    <VendorDescription>Cleanroom Compliance Validation Tool</VendorDescription>
+  </AddIn>
+</RevitAddIns>

@@ -1,0 +1,207 @@
+<Window x:Class="CleanroomValidator.UI.RoomClassificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cleanroom Validator - Set Space Classifications"
+        Height="700" Width="1050"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="HeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        
+        <Style x:Key="StandardButton" TargetType="RadioButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border" 
+                                Background="White" 
+                                BorderBrush="#DDD" 
+                                BorderThickness="2" 
+                                CornerRadius="8" 
+                                Padding="20,15"
+                                Cursor="Hand"
+                                MinWidth="180">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock x:Name="title" 
+                                           Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" 
+                                           FontSize="18" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="subtitle" 
+                                           Text="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" 
+                                           FontSize="11" 
+                                           Foreground="#666" 
+                                           HorizontalAlignment="Center"
+                                           Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#1976D2"/>
+                                <Setter TargetName="border" Property="Background" Value="#E3F2FD"/>
+                                <Setter TargetName="title" Property="Foreground" Value="#1976D2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#90CAF9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Row style for level grouping -->
+        <Style x:Key="LevelGroupStyle" TargetType="GroupItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupItem">
+                        <Expander IsExpanded="True" Background="#E8E8E8" Margin="0,5,0,0">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Margin="5,2"/>
+                                    <TextBlock Text="{Binding ItemCount, StringFormat=' ({0} spaces)'}" 
+                                               Foreground="#666" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsPresenter/>
+                        </Expander>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Set Space Classifications" FontSize="22" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <!-- Standard Selection -->
+        <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="Step 1: Select Standard" Style="{StaticResource HeaderStyle}"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <RadioButton x:Name="GmpRadio" 
+                                 Content="GMP" 
+                                 Tag="EU Annex 1 (Grades B, C, D)"
+                                 Style="{StaticResource StandardButton}"
+                                 Checked="StandardRadio_Checked"
+                                 Margin="0,0,30,0"/>
+                    <RadioButton x:Name="IsoRadio" 
+                                 Content="ISO" 
+                                 Tag="ISO 14644 (Classes 6, 7, 8)"
+                                 Style="{StaticResource StandardButton}"
+                                 Checked="StandardRadio_Checked"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Instructions -->
+        <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="Step 2: Assign Classifications" Style="{StaticResource HeaderStyle}"/>
+                <TextBlock Text="Check spaces using the checkbox column, then select a classification from any dropdown - it will apply to all checked spaces. Spaces are grouped by level. Linked spaces are shown for reference only." 
+                           Foreground="#666" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Space Schedule Grid -->
+        <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="15">
+            <DataGrid x:Name="SpacesGrid"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      SelectionMode="Extended"
+                      Background="White"
+                      BorderThickness="0"
+                      GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="#EEE"
+                      RowHeight="32"
+                      ColumnHeaderHeight="38"
+                      HeadersVisibility="Column">
+                <DataGrid.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource LevelGroupStyle}">
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <DataGridRowsPresenter/>
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#F5F5F5"/>
+                        <Setter Property="Padding" Value="8,5"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="BorderBrush" Value="#DDD"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <!-- Checkbox Column -->
+                    <DataGridTemplateColumn Header="✓" Width="40">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" 
+                                          IsEnabled="{Binding IsEditable}"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Number" Binding="{Binding Number}" Width="80" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Space Name" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="100" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#888"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Area (m²)" Binding="{Binding Area, StringFormat=N1}" Width="75" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Current" Binding="{Binding CurrentClass}" Width="90" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#666"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="New Classification" Width="130">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding AvailableClasses}" 
+                                          SelectedItem="{Binding NewClass, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectionChanged="ClassComboBox_SelectionChanged"
+                                          IsEnabled="{Binding IsEditable}"
+                                          Margin="2"
+                                          VerticalContentAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button x:Name="CheckAllButton" Content="Check All" Width="80" Height="32" Margin="0,0,5,0" Click="CheckAllButton_Click"/>
+            <Button x:Name="UncheckAllButton" Content="Uncheck All" Width="85" Height="32" Margin="0,0,15,0" Click="UncheckAllButton_Click"/>
+            <Button x:Name="ClearAllButton" Content="Clear All" Width="70" Height="32" Margin="0,0,15,0" Click="ClearAllButton_Click"/>
+            <Button x:Name="ApplyButton" Content="Apply Changes" Width="110" Height="32" Margin="0,0,10,0" 
+                    Background="#1976D2" Foreground="White" FontWeight="SemiBold" Click="ApplyButton_Click"/>
+            <Button x:Name="CancelButton" Content="Cancel" Width="70" Height="32" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

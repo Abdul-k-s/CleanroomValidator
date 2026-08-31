@@ -1,0 +1,226 @@
+<Window x:Class="CleanroomValidator.UI.SpaceTypeMappingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Space Type Mapping" 
+        Height="650" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+    
+    <Window.Resources>
+        <Style x:Key="HeaderTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#333"/>
+        </Style>
+        
+        <Style x:Key="InfoTextBlock" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#666"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#106EBE"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CCCCCC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D0D0D0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Map Rooms to Space Types" Style="{StaticResource HeaderTextBlock}" FontSize="18"/>
+            <TextBlock Style="{StaticResource InfoTextBlock}" Margin="0,5,0,0">
+                Review and adjust the suggested Space Type mappings for each room. 
+                Classified rooms can automatically create new cleanroom Space Types with standard parameters.
+            </TextBlock>
+        </StackPanel>
+        
+        <!-- Legend -->
+        <Border Grid.Row="1" Background="#E8F4FD" CornerRadius="4" Padding="10" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Legend: " FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <Border Background="#4CAF50" Width="12" Height="12" CornerRadius="2" Margin="10,0,5,0"/>
+                <TextBlock Text="Good Match (≥80%)" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <Border Background="#FFC107" Width="12" Height="12" CornerRadius="2" Margin="0,0,5,0"/>
+                <TextBlock Text="Partial Match (50-80%)" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <Border Background="#9E9E9E" Width="12" Height="12" CornerRadius="2" Margin="0,0,5,0"/>
+                <TextBlock Text="No Match" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <Border Background="#2196F3" Width="12" Height="12" CornerRadius="2" Margin="0,0,5,0"/>
+                <TextBlock Text="Classified (Cleanroom)" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- DataGrid -->
+        <DataGrid Grid.Row="2" 
+                  x:Name="MappingDataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  SelectionMode="Extended"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  BorderThickness="1"
+                  BorderBrush="#DDD"
+                  RowHeight="32"
+                  AlternatingRowBackground="#FAFAFA">
+            
+            <DataGrid.Columns>
+                <!-- Match Indicator -->
+                <DataGridTemplateColumn Header="" Width="30" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border Width="16" Height="16" CornerRadius="8"
+                                    Background="{Binding MatchIndicatorColor}"
+                                    ToolTip="{Binding MatchTooltip}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <!-- Room Number -->
+                <DataGridTextColumn Header="Room #" Binding="{Binding RoomNumber}" Width="80" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5,0"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <!-- Room Name -->
+                <DataGridTextColumn Header="Room Name" Binding="{Binding RoomName}" Width="*" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5,0"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <!-- Source -->
+                <DataGridTextColumn Header="Source" Binding="{Binding SourceName}" Width="100" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5,0"/>
+                            <Setter Property="Foreground" Value="#666"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <!-- Classification -->
+                <DataGridTextColumn Header="Classification" Binding="{Binding CleanlinessClass}" Width="100" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5,0"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsClassified}" Value="True">
+                                    <Setter Property="Foreground" Value="#2196F3"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <!-- Space Type Selection -->
+                <DataGridTemplateColumn Header="Space Type" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding AvailableSpaceTypes}"
+                                      SelectedItem="{Binding SelectedSpaceTypeName, UpdateSourceTrigger=PropertyChanged}"
+                                      Margin="2"
+                                      VerticalContentAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                
+                <!-- Apply Cleanroom Params Checkbox -->
+                <DataGridTemplateColumn Header="Apply Cleanroom Params" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding ApplyCleanroomParams, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding IsClassified}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      ToolTip="Apply cleanroom standard parameters (ACH, pressure, etc.)"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- Bulk Actions -->
+        <Border Grid.Row="3" Background="#FFF" CornerRadius="4" Padding="10" Margin="0,10,0,0" BorderBrush="#DDD" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Bulk Actions" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Auto-Match All" Style="{StaticResource SecondaryButton}" 
+                            Click="AutoMatchAll_Click" Margin="0,0,10,0"
+                            ToolTip="Re-apply automatic matching for all rooms"/>
+                    <Button Content="Clear All Mappings" Style="{StaticResource SecondaryButton}" 
+                            Click="ClearAllMappings_Click" Margin="0,0,10,0"
+                            ToolTip="Clear all Space Type selections"/>
+                    <Button Content="Select Cleanroom Types for Classified" Style="{StaticResource SecondaryButton}"
+                            Click="SelectCleanroomTypes_Click"
+                            ToolTip="Enable 'Create Cleanroom Type' for all classified rooms"/>
+                    <Separator Width="1" Background="#DDD" Margin="10,0"/>
+                    <TextBlock Text="Set selected rows to:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox x:Name="BulkSpaceTypeCombo" Width="150" VerticalContentAlignment="Center"/>
+                    <Button Content="Apply" Style="{StaticResource SecondaryButton}" 
+                            Click="ApplyBulkSpaceType_Click" Margin="5,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        
+        <!-- Footer Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <TextBlock x:Name="StatusText" VerticalAlignment="Center" Margin="0,0,20,0" Foreground="#666"/>
+            <Button Content="Cancel" Style="{StaticResource SecondaryButton}" 
+                    Click="Cancel_Click" Margin="0,0,10,0" Width="100"/>
+            <Button Content="Create Spaces" Style="{StaticResource ActionButton}" 
+                    Click="CreateSpaces_Click" Width="150"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,10 @@
+<Project Sdk="WixToolset.Sdk/4.0.4">
+  <PropertyGroup>
+    <OutputName>CleanroomValidator_Setup_v1.0.0</OutputName>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <SourceDir>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\..\CleanroomValidator\bin\Release\net8.0-windows'))</SourceDir>
+    <DefineConstants>SourceDir=$(SourceDir)</DefineConstants>
+  </PropertyGroup>
+</Project>

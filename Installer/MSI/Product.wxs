@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="CleanroomValidator for Revit 2025"
+           Manufacturer="AUS Engineering"
+           Version="2.0.0.0"
+           UpgradeCode="8D4E2F1A-3B5C-4D6E-9F8A-1B2C3D4E5F6A">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Feature Id="ProductFeature" Title="CleanroomValidator" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="AddinManifest" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="AutodeskFolder" Name="Autodesk">
+        <Directory Id="RevitFolder" Name="Revit">
+          <Directory Id="AddinsFolder" Name="Addins">
+            <Directory Id="Revit2025Folder" Name="2025">
+              <Directory Id="CleanroomValidatorFolder" Name="CleanroomValidator" />
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="CleanroomValidatorFolder">
+      <Component Id="MainDll">
+        <File Source="$(SourceDir)\CleanroomValidator.dll" />
+      </Component>
+      <Component Id="DepsJson">
+        <File Source="$(SourceDir)\CleanroomValidator.deps.json" />
+      </Component>
+      <Component Id="RuntimeConfig">
+        <File Source="$(SourceDir)\CleanroomValidator.runtimeconfig.json" />
+      </Component>
+      <Component Id="PdbFile">
+        <File Source="$(SourceDir)\CleanroomValidator.pdb" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="AddinManifest" Directory="Revit2025Folder">
+      <Component Id="AddinFile">
+        <File Source="..\..\CleanroomValidator.addin" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

@@ -1,0 +1,141 @@
+<Window x:Class="CleanroomValidator.UI.SetPressureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Set Room Pressure"
+        Height="560" Width="720"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="HeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#1A1A2E"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+        <Style x:Key="SubText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#1A1A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="BorderBrush" Value="#333"/>
+        </Style>
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#F9F9F9"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#D0E8FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Set Room Pressure" Style="{StaticResource HeaderText}"/>
+        <TextBlock Grid.Row="1" Style="{StaticResource SubText}">
+            Enter pressure differential (Pa) for each room/space. Positive = pressurised, negative = depressurised.
+        </TextBlock>
+
+        <!-- Grid -->
+        <DataGrid Grid.Row="2"
+                  x:Name="PressureGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserSortColumns="True"
+                  AlternationCount="2"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  BorderBrush="#CCC"
+                  BorderThickness="1"
+                  RowHeight="30"
+                  FontSize="13"
+                  SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Number" Binding="{Binding Number}" Width="80" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Level" Binding="{Binding Level}" Width="100" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding ElementType}" Width="70" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Class" Binding="{Binding CleanlinessClass}" Width="80" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Pressure (Pa)"
+                                    Binding="{Binding Pressure, UpdateSourceTrigger=LostFocus}"
+                                    Width="110">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="Padding" Value="8,0"/>
+                            <Setter Property="Foreground" Value="#1A1A2E"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                    <DataGridTextColumn.EditingElementStyle>
+                        <Style TargetType="TextBox">
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="TextAlignment" Value="Right"/>
+                        </Style>
+                    </DataGridTextColumn.EditingElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Hint -->
+        <TextBlock Grid.Row="3"
+                   Text="💡 Click any Pressure cell to edit. Common values: GMP-B corridor +15 Pa, GMP-C +10 Pa, GMP-D +5 Pa."
+                   FontSize="11" Foreground="#777" Margin="0,8,0,12"/>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="Apply to All Selected"
+                    Style="{StaticResource ActionButton}"
+                    Background="#607D8B" Foreground="White"
+                    Click="ApplyToSelected_Click"/>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <TextBlock Text="Quick fill (Pa):" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="12"/>
+                <TextBox x:Name="QuickFillValue" Width="60" VerticalContentAlignment="Center"
+                         FontSize="13" Padding="4,2" Text="0"/>
+            </StackPanel>
+
+            <Button Grid.Column="4"
+                    Content="Save"
+                    Style="{StaticResource ActionButton}"
+                    Background="#2196F3" Foreground="White"
+                    Click="Save_Click"/>
+        </Grid>
+    </Grid>
+</Window>
